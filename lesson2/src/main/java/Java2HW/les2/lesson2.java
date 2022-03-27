@@ -1,6 +1,5 @@
 package Java2HW.les2;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class lesson2 {
@@ -14,19 +13,18 @@ public class lesson2 {
         System.out.println();
         System.out.println("Количество столбцов:");
         column = scanner.nextInt();
-        try {
-            new MyArraySizeException(row, column);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
         System.out.println();
         String[][] newArray = new String[row][column];
-
-        createArr(newArray, scanner); // Вызов метода для заполнения массива
-        System.out.println("Сумма значений элементов массива = " + calcArr(newArray, row, column));
+        try {
+            createArr(newArray, scanner, row, column); // Вызов метода для заполнения массива
+            System.out.println("Сумма значений элементов массива = " + calcArr(newArray, row, column));
+        } catch (MyArraySizeException | MyArrayDataException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static void createArr(String[][] array, Scanner scanner) { // Заполнение массива строк
+    private static void createArr(String[][] array, Scanner scanner, int row, int column) { // Заполнение массива строк
+        if (row != 4 || column != 4) throw new MyArraySizeException(row, column);
         System.out.println("Заполните массив. ");
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
@@ -49,7 +47,7 @@ public class lesson2 {
                     arrayInt[i][j] = Integer.parseInt(array[i][j]); // Приведение массива строк к массиву целых чисел
                     sum += arrayInt[i][j]; // Подсчет суммы значений элементов массива
                 } catch (NumberFormatException e) { // Вывод ошибки, если значение отличное от целого числа
-                    System.out.println("Некорректный тип элемента массива по индексу: строка: " + (i + 1) + ", столбец: " + (j + 1));
+                     throw new MyArrayDataException(i, j);
                 }
             }
         }
